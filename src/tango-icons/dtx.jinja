@@ -1,0 +1,188 @@
+% \iffalse meta-comment
+%
+% Copyright (C) <<year>> <<author>>
+% -------------------------------------------------------
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3
+% of this license or (at your option) any later version.
+% The latest version of this license is in:
+%
+%    http://www.latex-project.org/lppl.txt
+%
+% and version 1.3 or later is part of all distributions of LaTeX 
+% version 2005/12/01 or later.
+%
+% \fi
+%
+% \iffalse
+%<*documentation>
+\documentclass{ltxdoc}
+\usepackage{tango-icons}
+\usepackage{doc}
+\usepackage{listings}
+\usepackage[hidelinks]{hyperref}
+\usepackage{textcomp}
+\usepackage{verbatim}
+\usepackage{longtable}
+\lstset{basicstyle=\ttfamily,commentstyle=\color{white},language=TeX,breaklines=true,breakatwhitespace}
+
+\EnableCrossrefs
+\begin{document}
+\DocInput{tango-icons.dtx}
+\end{document}
+%</documentation>
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{tango-icons}[<< year >>/<< '%02d'|format(month) >>/<< '%02d'|format(day) >> v<< version >> LaTeX tango-icons (tango-icon-theme v<< original_version >>)]
+\RequirePackage{tikz}
+\RequirePackage{ifthen}
+% \fi
+%
+% \title{tango-icons v<< version >> (tango-icon-theme v<< original_version >>)}
+% \author{<< author >>}
+%
+% \maketitle
+%
+% \begin{abstract}\noindent
+% Simple wrapper which allows to use Tango icons through \LaTeX\ commands.
+% This works on images, so no fancy unicode-font stuff is needed and it \textit{should work} on every (PDF-capable) \LaTeX\ installation.
+% \end{abstract}
+%
+% \section{Available Commands}
+%
+% \noindent
+% \DescribeMacro{\tangoicon} basically includes a PDF graphic of the icon via |\includegraphics|.
+% Per default |\includegraphics| is given the parameter |height=\tangoiconDefaultHeight|, where |\tangoiconDefaultHeight| is set to |\fontcharht\font`X| (i.e.\ the height of the letter X).
+% |\tangoicon{emotes_face-smile}| with default settings looks like this: \tangoicon{emotes_face-smile}.
+%
+% Use |\setlength{\tangoiconDefaultHeight}{...}| to change the default hight, this effects all |\tangoicon| usages.
+% \setlength{\tangoiconDefaultHeight}{0.6em}
+% For example, with the height set to |0.6em| |\tangoicon{emotes_face-smile}| looks like this: \tangoicon{emotes_face-smile}
+% \setlength{\tangoiconDefaultHeight}{\fontcharht\font`X}
+%
+% The look of a single icon can be changed via an optional parameter (everything |\includegraphics| allows works).
+% Example \tangoicon[height=\tangoiconDefaultHeight, angle=45, trim={1mm 1mm 1mm 1mm}, clip]{emotes_face-smile}: |\tangoicon[height=\default| |Height, angle=45, trim={1mm 1mm 1mm 1mm}, clip]{emotes_face-smile}|.\footnote{|defaultHeight| needs to be explicitly set, as the usage of the optional parameter overwrites the default one.}
+%
+% |\tangoicon| works perfectly fine in a Tikz picture:
+% \vspace*{.5em}
+% \begin{center}
+%     \begin{tikzpicture}
+%         \node[scale=7,inner sep=0pt] (a) at (0,0) {\tangoicon{status_weather-clear}};
+%         \node at (0.2,-1.2) {Day};
+%         \node[scale=7,inner sep=0pt] (b) at (8,0) {\tangoicon{status_weather-clear-night}};
+%         \node at (8.2,-1.2) {Night};
+%         \draw[-latex] (a) -- (b);
+%     \end{tikzpicture}
+% \end{center}
+%
+% The ``Day'' node in the example above is created with
+% \begin{center}
+% |\node[scale=7,inner sep=0pt] (a) at (0,0)| |{\tangoicon{status_weather-clear}};|.
+% \end{center}
+%
+% \vspace*{.5em}
+% \noindent
+% \DescribeMacro{\texttangoicon} adapts itself to the text height (|\tangoicon| does not).
+% Hence, |\texttangoicon{emotes_face-smile}| looks like \texttangoicon{emotes_face-smile}, but |{\Large\texttangoicon{emotes_face-smile}}| looks like {\Large\texttangoicon{emotes_face-smile}}.
+% It does not take optional parameters.
+%
+% \section{Finding Icon Names}
+%
+% All available icons and their aliases are listed at the end of this document.
+%
+% \paragraph{Examples.}
+%
+% \begin{itemize}
+%     \item[\tangoicon{places_folder}] |\tangoicon{places_folder}|
+%     \item[\tangoicon{emotes_face-smile-big}] |\tangoicon{emotes_face-smile-big}|
+% \end{itemize}
+%
+<% for line in license_text -%>
+% << line >>
+<% endfor %>
+% \clearpage
+% \section{List of Icons and their Aliases}
+% \begin{longtable}{cp{0.9\textwidth}}
+<% for unicode, aliases in iconnames_mapping -%>
+% \raisebox{-2em}{\tangoicon[height=3em]{<<unicode>>}} & <% for alias in aliases %> |<<alias>>|\newline<% endfor -%>\\%
+<% endfor %>
+% \end{longtable}
+%
+% \StopEventually{}
+% \clearpage
+% \section{Implementation}
+
+% \begin{macro}{\tangoiconDefaultHeight}
+% Defines the length |tangoiconDefaultHeight| as the height of the character ``X''.
+% To change the length in the document use, e.g., |\setlength{\tangoiconDefaultHeight}{2em}|.
+%    \begin{macrocode}
+\newlength{\tangoiconDefaultHeight}
+\AtBeginDocument{\setlength{\tangoiconDefaultHeight}{\fontcharht\font`X}}
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{PDF Group Warning}
+% As the icons are PDF-based and use transparency, they include groups.
+% I was not able to change the inkscape export so that that does not happen.
+% Hence, pdflatex throws a warning about multiple groups on one PDF page.
+% This package disables said warning: |\pdfsuppresswarningpagegroup=1| as it is of no concern for the inputted icons.
+% It \emph{could} happen, that a PDF you input is faulty and you don't notice due to said suppression.
+% You can enable the warning with |\pdfsuppresswarningpagegroup=0|.
+%    \begin{macrocode}
+\begingroup\expandafter\expandafter\expandafter\endgroup
+\expandafter\ifx\csname pdfsuppresswarningpagegroup\endcsname\relax
+\else
+  \pdfsuppresswarningpagegroup=1\relax
+\fi
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\tangoicon}
+% Includes the given Tango icon as an image in place.
+%    \begin{macrocode}
+\newcommand{\tangoicon}[2][height=\tangoiconDefaultHeight]{%
+  \ifcsname tangoicon #2\endcsname%
+    \csname tangoicon #2\endcsname{#1}%
+  \else%
+    \PackageError{tango-icons}%
+      {Undefined icon `#2'}%
+      {See section 2 (``Finding Icon Names'') of the tango-icons package
+      documentation, for ways to get the icon you want.}%
+  \fi%
+}%
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\texttangoicon}
+% Uses the |\tangoicon| command so that it adapts to the fontsize.
+%    \begin{macrocode}
+\newcommand{\texttangoicon}[1]{%
+  \raisebox{-.1ex}{\tangoicon[height=1.1\fontcharht\font`X]{#1}}%
+}%
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{macro}{\defineTangoIcon}
+% Defines an internal |\tangoicon ...| command that holds the reference to the actual image.
+% Needs the page number and alias under which to find it.
+%    \begin{macrocode}
+\newcommand{\defineTangoIcon}[2]{%
+\expandafter\newcommand\csname tangoicon #2\endcsname[1]{%
+  \includegraphics[page=#1, ##1]{all-tango-icons.pdf}}%
+}%
+%    \end{macrocode}
+% \end{macro}
+
+% \begin{comment} % not really relevant in the PDF
+% \begin{macro}{Define Tango icons}
+% This defines all Tango icons this package provides.
+%    \begin{macrocode}
+<% for (page, alias) in iconnames -%>
+\defineTangoIcon{<<page>>}{<<alias>>}%
+<% endfor %>
+%    \end{macrocode}
+% \end{macro}
+% \end{comment}
+
+% \Finale
+\endinput
